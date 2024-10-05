@@ -5,7 +5,6 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
-import ega.spring.FitnessClub.enums.membershipType;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -57,20 +56,15 @@ public class Person {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "membershiptype")
-    private  membershipType membershipType;
-
-
     public Person() {}
 
     public Person(String first_name, String last_name, LocalDate bd_date, String email,
-                  String role, String password, membershipType membershipType) {
+                  String role, String password) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.bd_date = bd_date;
         this.email = email;
         this.role = role;
         this.password = password;
-        this.membershipType = membershipType;
     }
 }

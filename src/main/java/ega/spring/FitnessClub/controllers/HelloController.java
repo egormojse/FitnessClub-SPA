@@ -10,21 +10,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HelloController {
 
-    private final AdminService adminService;
-
-    @Autowired
-    public HelloController(AdminService adminService) {
-        this.adminService = adminService;
-    }
-
     @GetMapping("/FitnessClub")
     public String FitnessClub() {
         return "index";
     }
 
-    @GetMapping("/admin")
-    public String adminPage() {
-        adminService.doAdminStaff();
-        return "admin";
+    @GetMapping("/purchase")
+    public String purchase() {
+        return "purchase";
+    }
+
+    @GetMapping("/purchaseSpa")
+    public String purchaseSpa() {
+        return "purchaseSpa";
+    }
+
+    @GetMapping("/shop")
+    public String shop() {
+        return "shop";
     }
 }

@@ -40,10 +40,61 @@
                 <h3>Settings</h3>
                 <p>Configure your app settings.</p>
             </div>
+
+            <!-- Форма добавления сотрудника -->
+            <div class="card">
+                <h3>Add New Employee</h3>
+                <form th:action="@{/admin/register-employee}" th:object="${employee}" method="post">
+                    <div>
+                        <label for="name">username:</label>
+                        <input type="text" id="username" th:field="*{username}" required>
+                        <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                    </div>
+                    <div>
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" th:field="*{name}" required>
+                        <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                    </div>
+                    <div>
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" th:field="*{email}" required>
+                        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                    </div>
+                    <div>
+                        <label for="specialization">Specialization:</label>
+                        <input type="text" id="specialization" th:field="*{specialization}" required>
+                        <div th:if="${#fields.hasErrors('specialization')}" th:errors="*{specialization}"></div>
+                    </div>
+                    <div>
+                        <label for="experience">Experience (years):</label>
+                        <input type="number" id="experience" th:field="*{experience}" min="0" required>
+                        <div th:if="${#fields.hasErrors('experience')}" th:errors="*{experience}"></div>
+                    </div>
+                    <div>
+                        <label for="bio">Bio:</label>
+                        <textarea id="bio" th:field="*{bio}" required></textarea>
+                        <div th:if="${#fields.hasErrors('bio')}" th:errors="*{bio}"></div>
+                    </div>
+                    <div>
+                        <label for="roleSelect">Role:</label>
+                        <select id="roleSelect" th:field="*{role}">
+                            <option value="SPA">SPA Employee</option>
+                            <option value="TRAINER">Trainer</option>
+                        </select>
+                    </div>
+                    <button type="submit">Register Employee</button>
+                </form>
+
+                <div th:if="${success}">
+                    <p th:text="${success}" style="color: green;"></p>
+                </div>
+                <div th:if="${error}">
+                    <p th:text="${error}" style="color: red;"></p>
+                </div>
+            </div>
         </section>
     </main>
 </div>
 
-<script src="/js/admin.js"></script>
 </body>
 </html>

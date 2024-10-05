@@ -4,11 +4,14 @@ package ega.spring.FitnessClub.services;
 import ega.spring.FitnessClub.models.Person;
 import ega.spring.FitnessClub.repositories.PeopleRepository;
 import ega.spring.FitnessClub.security.PersonDetails;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,4 +32,10 @@ public class PersonDetailsService implements UserDetailsService {
 
         return new PersonDetails(person.get());
     }
+
+    public Person getUserById(int userId) {
+        return peopleRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
 }

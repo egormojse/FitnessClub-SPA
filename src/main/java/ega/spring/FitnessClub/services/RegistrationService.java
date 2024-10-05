@@ -1,7 +1,6 @@
 package ega.spring.FitnessClub.services;
 
 
-import ega.spring.FitnessClub.enums.membershipType;
 import ega.spring.FitnessClub.models.Person;
 import ega.spring.FitnessClub.repositories.PeopleRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,7 +21,6 @@ public class RegistrationService {
     public void register(Person person) {
         person.setPassword(passwordEncoder.encode(person.getPassword()));
         person.setRole("USER");
-        person.setMembershipType(membershipType.STANDARD);
         peopleRepository.save(person);
     }
 }

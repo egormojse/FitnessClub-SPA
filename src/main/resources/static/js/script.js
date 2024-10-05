@@ -17,23 +17,24 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Управление раскрывающимися деталями
-    indicators.forEach((indicator) => {
-        indicator.addEventListener("click", function () {
-            const target = this.getAttribute("data-toggle");
-            const details = document.getElementById(target).querySelector(".details");
+    document.querySelectorAll('.indicator').forEach(indicator => {
+        indicator.addEventListener('click', function() {
+            const contentId = this.getAttribute('data-toggle');
+            const details = document.querySelector(`#${contentId} .details`);
 
-            if (details.classList.contains("hidden")) {
-                details.classList.remove("hidden");
-                details.classList.add("visible");
-                this.style.transform = "rotate(180deg)";
+            // Тoggle visibility of details
+            if (details.classList.contains('hidden')) {
+                details.classList.remove('hidden');
+                details.classList.add('visible');
+                this.classList.add('active'); // Поворот стрелки
             } else {
-                details.classList.remove("visible");
-                details.classList.add("hidden");
-                this.style.transform = "rotate(0deg)";
+                details.classList.remove('visible');
+                details.classList.add('hidden');
+                this.classList.remove('active'); // Возврат стрелки в исходное положение
             }
         });
     });
+
 
     // Валидация форм (универсальная для всех форм)
     const forms = document.querySelectorAll('.form');
