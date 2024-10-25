@@ -2,15 +2,14 @@ package ega.spring.FitnessClub.controllers;
 
 
 import ega.spring.FitnessClub.models.Person;
+import ega.spring.FitnessClub.services.PersonDetailsService;
 import ega.spring.FitnessClub.services.RegistrationService;
 import ega.spring.FitnessClub.util.PersonValidator;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/auth")
@@ -28,6 +27,7 @@ public class AuthController {
     public String loginPage() {
         return "auth/login";
     }
+
 
     @GetMapping("/registration")
     public String registerPage(@ModelAttribute("person") Person person) {

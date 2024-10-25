@@ -1,7 +1,12 @@
 package ega.spring.FitnessClub.services;
 
 import ega.spring.FitnessClub.models.GymBooking;
+import ega.spring.FitnessClub.models.Person;
+import ega.spring.FitnessClub.models.PersonMembership;
+import ega.spring.FitnessClub.models.Trainer;
+import ega.spring.FitnessClub.repositories.PersonMembershipRepository;
 import ega.spring.FitnessClub.repositories.WorkoutBookingRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,12 +21,19 @@ public class BookingService {
 
     private final WorkoutBookingRepository trainingSessionRepository;
 
+    @Autowired
+    private PersonMembershipRepository personMembershipRepository;
+
     public BookingService(WorkoutBookingRepository trainingSessionRepository) {
         this.trainingSessionRepository = trainingSessionRepository;
     }
 
     public void save(GymBooking session) {
         trainingSessionRepository.save(session);
+    }
+
+    public List<GymBooking> getUserWorkouts(int userId) {
+        return trainingSessionRepository.findByUserId(userId);
     }
 
     public List<String> getOccupiedTimes(int trainerId, LocalDate date) {
@@ -41,5 +53,29 @@ public class BookingService {
         return !existingBookings.isEmpty();
     }
 
+    public List<GymBooking> getAllBookings() {
+        return trainingSessionRepository.findAllByDeletedFalse();
+    }
+
+    public void deleteBookingById(int id) {
+        GymBooking booking = trainingSessionRepository.findById(id);
+        if (booking != null) {
+            booking.setDeleted(true);
+            trainingSessionRepository.save(booking);
+        }
+    }
+
+    public void updateBooking(int id, GymBooking updatedBooking) {
+        GymBooking booking = trainingSessionRepository.findById(id);
+        if (booking != null) {
+            booking.setStatus(updatedBooking.getStatus());
+            booking.setDate(updatedBooking.getDate());
+            trainingSessionRepository.save(booking);
+        }
+    }
+
+    public GymBooking getBookingById(int bookingId) {
+        return trainingSessionRepository.findById(bookingId);
+    }
 }
 

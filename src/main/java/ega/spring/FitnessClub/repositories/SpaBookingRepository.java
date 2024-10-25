@@ -19,4 +19,5 @@ public interface SpaBookingRepository extends JpaRepository<SpaBooking, Integer>
     List<SpaBooking> findByEmployeeIdAndDate(int employeeId, LocalDateTime date);
 
 
+    List<SpaBooking> findByUserId(int userId);
 }

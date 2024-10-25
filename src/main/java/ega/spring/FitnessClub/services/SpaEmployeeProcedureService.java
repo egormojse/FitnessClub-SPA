@@ -21,8 +21,5 @@ public class SpaEmployeeProcedureService {
         spaEmployeeProcedureRepository.save(spaEmployeeProcedure);
     }
 
-    public List<SpaEmployeeProcedure> getAll() {
-        return spaEmployeeProcedureRepository.findAll();
-    }
 
 }

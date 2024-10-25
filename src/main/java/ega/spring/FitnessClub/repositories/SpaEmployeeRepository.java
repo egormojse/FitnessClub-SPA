@@ -11,4 +11,7 @@ import java.util.List;
 public interface SpaEmployeeRepository extends JpaRepository<SpaEmployee, Integer> {
     List<SpaEmployee> findBySpecialization(String specialization);
 
+    SpaEmployee findById(int id);
+
+    List<SpaEmployee> findAllByDeletedFalse();
 }

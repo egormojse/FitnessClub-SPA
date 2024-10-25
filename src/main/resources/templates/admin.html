@@ -1,100 +1,214 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="/css/admin.css">
+    <title>Админ Панель</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script defer src="/js/script.js"></script>
+
 </head>
 <body>
 
-<div class="admin-container">
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <h2>Admin Panel</h2>
+<div class="container">
+    <nav class="tabs">
+        <div class="tab-button-wrapper">
+            <div class="tab-button active" data-target="userPanel">Пользователи</div>
+            <div class="tab-button" data-target="trainerPanel">Тренера</div>
+            <div class="tab-button" data-target="bookingPanel">Бронирования</div>
+            <div class="tab-button" data-target="orderPanel">Заказы</div>
+            <div class="tab-button" data-target="spaEmployeePanel">Сотрудники СПА</div>
         </div>
-        <nav class="nav">
-            <a href="#dashboard" class="nav-item active">Dashboard</a>
-            <a href="#users" class="nav-item">Users</a>
-            <a href="#settings" class="nav-item">Settings</a>
-            <a href="#logout" class="nav-item">Logout</a>
-        </nav>
-    </aside>
+    </nav>
 
-    <main class="main-content">
-        <header class="header">
-            <h1>Welcome, Admin</h1>
-            <p>Manage your application from here.</p>
-        </header>
-
-        <section class="content">
-            <div class="card">
-                <h3>Total Users</h3>
-                <p>123</p>
+    <div class="tab-content-wrapper">
+        <!-- User Panel -->
+        <div class="tab-content active" id="userPanel">
+            <h2>Пользователи</h2>
+            <div th:each="user : ${users}" class="card">
+                <p th:text="${user.getFirst_name()}">Имя пользователя</p>
             </div>
-            <div class="card">
-                <h3>New Signups</h3>
-                <p>15</p>
-            </div>
-            <div class="card">
-                <h3>Settings</h3>
-                <p>Configure your app settings.</p>
+            <div class="actions">
+                <button onclick="toggleForm('edit', 'user')">Редактировать</button>
+                <button onclick="toggleForm('delete', 'user')">Удалить</button>
             </div>
 
-            <!-- Форма добавления сотрудника -->
-            <div class="card">
-                <h3>Add New Employee</h3>
-                <form th:action="@{/admin/register-employee}" th:object="${employee}" method="post">
-                    <div>
-                        <label for="name">username:</label>
-                        <input type="text" id="username" th:field="*{username}" required>
-                        <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
-                    </div>
-                    <div>
-                        <label for="name">Name:</label>
-                        <input type="text" id="name" th:field="*{name}" required>
-                        <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
-                    </div>
-                    <div>
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" th:field="*{email}" required>
-                        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-                    </div>
-                    <div>
-                        <label for="specialization">Specialization:</label>
-                        <input type="text" id="specialization" th:field="*{specialization}" required>
-                        <div th:if="${#fields.hasErrors('specialization')}" th:errors="*{specialization}"></div>
-                    </div>
-                    <div>
-                        <label for="experience">Experience (years):</label>
-                        <input type="number" id="experience" th:field="*{experience}" min="0" required>
-                        <div th:if="${#fields.hasErrors('experience')}" th:errors="*{experience}"></div>
-                    </div>
-                    <div>
-                        <label for="bio">Bio:</label>
-                        <textarea id="bio" th:field="*{bio}" required></textarea>
-                        <div th:if="${#fields.hasErrors('bio')}" th:errors="*{bio}"></div>
-                    </div>
-                    <div>
-                        <label for="roleSelect">Role:</label>
-                        <select id="roleSelect" th:field="*{role}">
-                            <option value="SPA">SPA Employee</option>
-                            <option value="TRAINER">Trainer</option>
-                        </select>
-                    </div>
-                    <button type="submit">Register Employee</button>
-                </form>
+            <form class="edit-form" id="editUserForm" th:action="@{/user/edit}" method="post">
+                <label for="userSelect">Выберите пользователя:</label>
+                <select name="userId" id="userSelect" required>
+                    <option value="">Выберите пользователя</option>
+                    <option th:each="user : ${users}" th:value="${user.getId()}" th:text="${user.getFirst_name()}"></option>
+                </select>
+                <label>Новое имя: <input type="text" name="firstName" required></label>
+                <button type="submit">Сохранить</button>
+            </form>
 
-                <div th:if="${success}">
-                    <p th:text="${success}" style="color: green;"></p>
-                </div>
-                <div th:if="${error}">
-                    <p th:text="${error}" style="color: red;"></p>
-                </div>
+            <!-- Форма удаления пользователя -->
+            <form class="delete-form" id="deleteUserForm" th:action="@{/user/delete}" method="post">
+                <label for="userDeleteSelect">Выберите пользователя для удаления:</label>
+                <select name="userId" id="userDeleteSelect" required>
+                    <option value="">Выберите пользователя</option>
+                    <option th:each="user : ${users}" th:value="${user.getId()}" th:text="${user.getFirst_name()}"></option>
+                </select>
+                <p>Вы уверены, что хотите удалить пользователя?</p>
+                <button type="submit">Удалить</button>
+            </form>
+        </div>
+
+        <!-- Trainer Panel -->
+        <div class="tab-content" id="trainerPanel">
+            <h2>Тренера</h2>
+            <div th:each="trainer : ${trainers}" class="card">
+                <p th:text="${trainer.getName()}">Имя тренера</p>
             </div>
-        </section>
-    </main>
+            <div class="actions">
+                <button onclick="toggleForm('edit', 'trainer')">Редактировать</button>
+                <button onclick="toggleForm('delete', 'trainer')">Удалить</button>
+            </div>
+
+            <form class="edit-form" id="editTrainerForm" th:action="@{/trainer/edit}" method="post">
+                <label for="trainerSelect">Выберите тренера:</label>
+                <select name="trainerId" id="trainerSelect" required>
+                    <option value="">Выберите тренера</option>
+                    <option th:each="trainer : ${trainers}" th:value="${trainer.getId()}" th:text="${trainer.getName()}"></option>
+                </select>
+                <label>Новое имя: <input type="text" name="firstName" required></label>
+                <button type="submit">Сохранить</button>
+            </form>
+
+
+            <form class="delete-form" id="deleteTrainerForm" th:action="@{/trainer/delete}" method="post">
+                <label for="trainerDeleteSelect">Выберите тренера для удаления:</label>
+                <select name="trainerId" id="trainerDeleteSelect" required>
+                    <option value="">Выберите тренера</option>
+                    <option th:each="trainer : ${trainers}" th:value="${trainer.getId()}" th:text="${trainer.getName()}"></option>
+                </select>
+                <p>Вы уверены, что хотите удалить тренера?</p>
+                <button type="submit">Удалить</button>
+            </form>
+        </div>
+
+        <!-- Booking Panel -->
+        <div class="tab-content" id="bookingPanel">
+            <h2>Бронирования</h2>
+            <div th:each="booking : ${bookings}" class="card">
+                <p th:text="${booking.getDate()}">Дата бронирования</p>
+                <p th:text="${booking.getStatus()}">Статус</p>
+            </div>
+            <div class="actions">
+                <button onclick="toggleForm('edit', 'booking')">Редактировать</button>
+                <button onclick="toggleForm('delete', 'booking')">Удалить</button>
+            </div>
+
+            <form class="edit-form" id="editBookingForm" th:action="@{/booking/edit}" method="post">
+                <label for="bookingSelect">Выберите бронирование:</label>
+                <select name="bookingId" id="bookingSelect" required>
+                    <option value="">Выберите бронирование</option>
+                    <option th:each="booking : ${bookings}" th:value="${booking.getId()}" th:text="${booking.getDate()}"></option>
+                </select>
+                <label>Статус:
+                    <input type="text" name="details" required placeholder="Введите новый статус">
+                </label>
+                <button type="submit">Сохранить</button>
+            </form>
+
+
+            <form class="delete-form" id="deleteBookingForm" th:action="@{/booking/delete}" method="post">
+                <label for="bookingDeleteSelect">Выберите бронирование для удаления:</label>
+                <select name="bookingId" id="bookingDeleteSelect" required>
+                    <option value="">Выберите бронирование</option>
+                    <option th:each="booking : ${bookings}" th:value="${booking.getId()}" th:text="${booking.getDate()}"></option>
+                </select>
+                <p>Вы уверены, что хотите удалить бронирование?</p>
+                <button type="submit">Удалить</button>
+            </form>
+        </div>
+
+        <!-- Order Panel -->
+        <div class="tab-content" id="orderPanel">
+            <h2>Заказы</h2>
+            <div th:each="order : ${orders}" class="card">
+                <p th:text="${order.getStatus()}">Статус</p>
+            </div>
+            <div class="actions">
+                <button onclick="toggleForm('edit', 'order')">Редактировать</button>
+                <button onclick="toggleForm('delete', 'order')">Удалить</button>
+            </div>
+
+            <form class="edit-form" id="editOrderForm" th:action="@{/order/edit}" method="post">
+                <label for="orderSelect">Выберите заказ:</label>
+                <select name="orderId" id="orderSelect" required>
+                    <option value="">Выберите заказ</option>
+                    <option th:each="order : ${orders}" th:value="${order.getId()}" th:text="${order.getStatus()}"></option>
+                </select>
+                <label>Новые детали заказа: <input type="text" name="newDetails" required></label>
+                <button type="submit">Сохранить</button>
+            </form>
+
+
+            <form class="delete-form" id="deleteOrderForm" th:action="@{/order/delete}" method="post">
+                <label for="orderDeleteSelect">Выберите заказ для удаления:</label>
+                <select name="orderId" id="orderDeleteSelect" required>
+                    <option value="">Выберите заказ</option>
+                    <option th:each="order : ${orders}" th:value="${order.getId()}" th:text="${order.getStatus()}"></option>
+                </select>
+                <p>Вы уверены, что хотите удалить заказ?</p>
+                <button type="submit">Удалить</button>
+            </form>
+        </div>
+
+        <!-- Spa Employee Panel -->
+        <div class="tab-content" id="spaEmployeePanel">
+            <h2>Сотрудники СПА</h2>
+            <div th:each="spaEmployee : ${spaEmployees}" class="card">
+                <p th:text="${spaEmployee.getName()}">Имя сотрудника СПА</p>
+            </div>
+            <div class="actions">
+                <button onclick="toggleForm('edit', 'spaEmployee')">Редактировать</button>
+                <button onclick="toggleForm('delete', 'spaEmployee')">Удалить</button>
+            </div>
+
+            <form class="edit-form" id="editSpaEmployeeForm" th:action="@{/spaEmployee/edit}" method="post">
+                <label for="spaEmployeeSelect">Выберите сотрудника СПА:</label>
+                <select name="spaEmployeeId" id="spaEmployeeSelect" required>
+                    <option th:each="spaEmployee : ${spaEmployees}" th:value="${spaEmployee.getId()}" th:text="${spaEmployee.getName()}"></option>
+                </select>
+                <label>Новое имя: <input type="text" name="name" required></label>
+                <button type="submit">Сохранить</button>
+            </form>
+
+
+            <form class="delete-form" id="deleteSpaEmployeeForm" th:action="@{/spa/employee/delete}" method="post">
+                <label for="spaEmployeeDeleteSelect">Выберите сотрудника СПА для удаления:</label>
+                <select name="spaEmployeeId" id="spaEmployeeDeleteSelect" required>
+                    <option value="">Выберите сотрудника СПА</option>
+                    <option th:each="spaEmployee : ${spaEmployees}" th:value="${spaEmployee.getId()}" th:text="${spaEmployee.getName()}"></option>
+                </select>
+                <p>Вы уверены, что хотите удалить сотрудника СПА?</p>
+                <button type="submit">Удалить</button>
+            </form>
+        </div>
+    </div>
 </div>
+
+<script>
+    function toggleForm(action, type) {
+        const editForm = document.getElementById(`edit${capitalize(type)}Form`);
+        const deleteForm = document.getElementById(`delete${capitalize(type)}Form`);
+        if (action === 'edit') {
+            editForm.style.display = editForm.style.display === 'block' ? 'none' : 'block';
+            deleteForm.style.display = 'none';
+        } else if (action === 'delete') {
+            deleteForm.style.display = deleteForm.style.display === 'block' ? 'none' : 'block';
+            editForm.style.display = 'none';
+        }
+    }
+
+    function capitalize(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+</script>
 
 </body>
 </html>

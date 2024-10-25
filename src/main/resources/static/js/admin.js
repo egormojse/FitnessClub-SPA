@@ -6,3 +6,13 @@ document.addEventListener('DOMContentLoaded', () => {
         sidebar.classList.toggle('hidden');
     });
 });
+
+function toggleActions(element) {
+    const actions = element.nextElementSibling;
+    if (actions.style.display === "none" || actions.style.display === "") {
+        actions.style.display = "block";
+    } else {
+        actions.style.display = "none";
+    }
+}
+

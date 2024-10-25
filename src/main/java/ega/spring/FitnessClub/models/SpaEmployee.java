@@ -45,4 +45,7 @@ public class SpaEmployee {
     @Column(name = "role")
     private String role;
 
+    @Column(name = "deleted")
+    private boolean deleted;
+
 }

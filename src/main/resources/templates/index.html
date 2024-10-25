@@ -9,6 +9,7 @@
     <script defer src="/js/script.js"></script>
 </head>
 <body>
+
 <div class="background-image"></div>
 <div class="container">
     <nav class="tabs">
@@ -48,11 +49,14 @@
             <p>Описание Профиля.</p>
             <div class="indicator" data-toggle="profile">▼</div>
             <div class="details hidden">
-                <a href="/user/profile" class="btn">Мой профиль</a>
-                <a href="/user/profile-settings" class="btn">Настройки профиля</a>
+
+                    <a href="/auth/login">Войти</a>
+                </div>
+                <a href="/profile" class="tab-button-link">Профиль</a>
+            <a href="/id" class="tab-button-link">id</a>
+            <a href="/user/profile-settings" class="btn">Настройки профиля</a>
             </div>
         </div>
     </div>
-</div>
 </body>
 </html>

@@ -26,21 +26,32 @@ public class MembershipService {
     public void purchaseMembership(String username, int membershipTypeId) {
         Person person = peopleRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("Пользователь с именем " + username + " не найден"));
-        System.out.println(person.getUsername());
 
         MembershipType membershipType = membershipTypeRepository.findById(membershipTypeId)
                 .orElseThrow(() -> new IllegalArgumentException("Абонемент с данным ID не найден"));
 
-        System.out.println(membershipType.getType());
+        PersonMembership existingMembership = personMembershipRepository.findActiveMembershipByPersonId(person.getId());
+        if (existingMembership != null) {
+            if (existingMembership.getEndDate().isAfter(LocalDate.now())) {
+                existingMembership.setRemainingGymVisits(existingMembership.getRemainingGymVisits() + membershipType.getGymVisits());
+                existingMembership.setRemainingSpaVisits(existingMembership.getRemainingSpaVisits() + membershipType.getSpaVisits());
+            } else {
+                existingMembership.setStartDate(LocalDate.now());
+                existingMembership.setEndDate(LocalDate.now().plusDays(membershipType.getDuration()));
+                existingMembership.setRemainingGymVisits(membershipType.getGymVisits());
+                existingMembership.setRemainingSpaVisits(membershipType.getSpaVisits());
+            }
+            personMembershipRepository.save(existingMembership);
+        } else {
+            PersonMembership personMembership = new PersonMembership();
+            personMembership.setPerson(person);
+            personMembership.setMembershipType(membershipType);
+            personMembership.setStartDate(LocalDate.now());
+            personMembership.setEndDate(LocalDate.now().plusDays(membershipType.getDuration()));
+            personMembership.setRemainingGymVisits(membershipType.getGymVisits());
+            personMembership.setRemainingSpaVisits(membershipType.getSpaVisits());
 
-        PersonMembership personMembership = new PersonMembership();
-        personMembership.setPerson(person);
-        personMembership.setMembershipType(membershipType);
-        personMembership.setStartDate(LocalDate.now());
-        personMembership.setEndDate(LocalDate.now().plusDays(membershipType.getDuration()));
-        personMembership.setRemainingGymVisits(membershipType.getGymVisits());
-        personMembership.setRemainingSpaVisits(membershipType.getSpaVisits());
-
-        personMembershipRepository.save(personMembership);
+            personMembershipRepository.save(personMembership);
+        }
     }
 }

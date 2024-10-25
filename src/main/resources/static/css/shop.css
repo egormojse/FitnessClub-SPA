@@ -1,0 +1,128 @@
+/* shop.css */
+
+/* Основные стили контейнера */
+.container {
+    max-width: 1200px; /* Максимальная ширина контейнера */
+    margin: 0 auto; /* Центрирование контейнера */
+    padding: 20px; /* Отступы */
+}
+body {
+    background: url('/images/back2.jpg') no-repeat center center fixed; /* Замените на путь к вашему фону */
+    background-size: cover; /* Покрытие всего экрана */
+}
+
+/* Стили заголовка */
+h1 {
+    text-align: center; /* Центрирование текста */
+    margin-bottom: 30px; /* Отступ снизу */
+}
+
+/* Стили для списка продуктов */
+.product-list {
+    display: grid; /* Используем Grid для расположения товаров */
+    grid-template-columns: repeat(3, 1fr); /* 3 колонки одинаковой ширины */
+    gap: 20px; /* Промежуток между элементами */
+    background-color: rgba(255, 255, 255, 0.8); /* Полупрозрачный белый фон */
+    padding: 20px; /* Отступы внутри контейнера */
+    border-radius: 10px; /* Закругленные углы */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Стили для каждого товара */
+.product-item {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Тень для визуального отделения */
+    border-radius: 8px; /* Закругленные углы */
+    padding: 15px; /* Отступы внутри карточки */
+    background-color: #fff; /* Цвет фона карточки */
+    transition: transform 0.2s; /* Анимация при наведении */
+    display: flex; /* Flexbox для содержимого товара */
+    flex-direction: column; /* Расположение содержимого в колонку */
+    justify-content: space-between; /* Распределение пространства между элементами */
+    height: 350px; /* Фиксированная высота для всех товаров */
+    overflow: hidden; /* Скрытие переполнения */
+}
+
+/* Эффект при наведении на товар */
+.product-item:hover {
+    transform: scale(1.05); /* Увеличение размера при наведении */
+}
+
+/* Стили для заголовка товара */
+.product-item h2 {
+    font-size: 1.2rem; /* Размер шрифта заголовка */
+    margin: 10px 0; /* Отступы вокруг заголовка */
+}
+
+/* Стили для описания и цены товара */
+.product-item p {
+    margin: 5px 0; /* Отступы для абзацев */
+    overflow: hidden; /* Скрытие переполнения */
+    text-overflow: ellipsis; /* Добавление '...' в конце */
+    white-space: nowrap; /* Запрет на перенос строк */
+}
+
+/* Обрезка длинного описания */
+.product-item p.description {
+    display: -webkit-box; /* Используем гибкую коробку */
+    -webkit-box-orient: vertical; /* Вертикальная ориентация */
+    -webkit-line-clamp: 3; /* Ограничиваем количество строк до 3 */
+    overflow: hidden; /* Скрытие переполнения */
+}
+
+/* Стили для формы добавления в корзину */
+.product-item form {
+    display: flex; /* Flexbox для формы */
+    align-items: center; /* Центрирование по вертикали */
+}
+
+/* Стили для кнопки добавления в корзину */
+.btn-add-to-cart {
+    background-color: #4CAF50; /* Цвет фона кнопки */
+    color: white; /* Цвет текста кнопки */
+    border: none; /* Убираем границы */
+    padding: 10px 15px; /* Отступы внутри кнопки */
+    border-radius: 5px; /* Закругленные углы */
+    cursor: pointer; /* Курсор в виде указателя */
+    transition: background-color 0.3s; /* Анимация при наведении */
+    margin-top: 10px; /* Отступ сверху от поля количества */
+    margin-left: auto; /* Перемещение кнопки вправо */
+}
+
+/* Эффект при наведении на кнопку */
+.btn-add-to-cart:hover {
+    background-color: #45a049; /* Темнее при наведении */
+}
+input[type="number"] {
+    width: 60px; /* Задаем ширину поля для ввода */
+    margin-right: 10px; /* Отступ справа от поля количества */
+}
+
+/* Стили для кнопки просмотра корзины */
+.btn-view-cart {
+    display: block; /* Блочное отображение */
+    margin: 20px auto; /* Центрирование */
+    padding: 10px 20px; /* Отступы */
+    background-color: #008CBA; /* Цвет фона кнопки */
+    color: white; /* Цвет текста кнопки */
+    text-align: center; /* Центрирование текста */
+    border-radius: 5px; /* Закругленные углы кнопки */
+    text-decoration: none; /* Убираем подчеркивание */
+}
+
+/* Эффект при наведении на кнопку просмотра корзины */
+.btn-view-cart:hover {
+    background-color: #007B9E; /* Темнее при наведении */
+}
+.photo-container {
+    background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон */
+    padding: 20px; /* Отступы внутри контейнера */
+    border-radius: 10px; /* Закругленные углы */
+    text-align: center; /* Центрирование текста */
+}
+
+/* Стили для изображений */
+.photo-container img {
+    max-width: 100%; /* Максимальная ширина изображения */
+    height: auto; /* Автоматическая высота */
+    border-radius: 10px; /* Закругленные углы для изображения */
+}

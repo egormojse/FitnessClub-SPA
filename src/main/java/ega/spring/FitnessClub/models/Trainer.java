@@ -55,6 +55,9 @@ public class Trainer {
         this.role = role;
     }
 
+    @Column(name = "deleted")
+    private boolean deleted;
+
     public Trainer() {
 
     }

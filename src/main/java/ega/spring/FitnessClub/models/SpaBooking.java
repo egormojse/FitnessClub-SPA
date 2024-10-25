@@ -33,8 +33,10 @@ public class SpaBooking {
     private LocalDateTime date;
 
     @Column(name = "status")
-
     private String status;
+
+    @Column(name = "deleted")
+    private boolean deleted;
 
     public SpaBooking() {}
 

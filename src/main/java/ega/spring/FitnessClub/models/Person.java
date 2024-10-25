@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -55,6 +56,10 @@ public class Person {
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "deleted")
+    private boolean deleted;
+
 
     public Person() {}
 

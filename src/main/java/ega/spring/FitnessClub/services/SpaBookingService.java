@@ -34,10 +34,13 @@ public class SpaBookingService {
                 .collect(Collectors.toList());
     }
 
-
     public boolean isTimeOccupied(int employeeId, LocalDate date, String time) {
         LocalDateTime dateTime = LocalDateTime.of(date, LocalTime.parse(time));
         List<SpaBooking> existingBookings = spaBookingRepository.findByEmployeeIdAndDate(employeeId, dateTime);
         return !existingBookings.isEmpty();
+    }
+
+    public List<SpaBooking> getUserSpaBookings(int userId) {
+        return spaBookingRepository.findByUserId(userId);
     }
 }

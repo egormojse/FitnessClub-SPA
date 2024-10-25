@@ -31,5 +31,8 @@ public class GymBooking {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "deleted")
+    private boolean deleted;
+
     public GymBooking() {}
 }
