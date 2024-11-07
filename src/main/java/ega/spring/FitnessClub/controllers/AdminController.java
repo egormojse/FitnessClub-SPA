@@ -18,15 +18,17 @@ public class AdminController {
     private final PersonDetailsService personService;
     private final TrainerService trainerService;
     private final BookingService bookingService;
+    private final SpaBookingService spaBookingService;
     private final OrderService orderService;
     private final SpaEmployeeService spaEmployeeService;
 
 
 
-    public AdminController(PersonDetailsService personService, TrainerService trainerService, BookingService bookingService, OrderService orderService, SpaEmployeeService spaEmployeeService) {
+    public AdminController(PersonDetailsService personService, TrainerService trainerService, BookingService bookingService, SpaBookingService spaBookingService, OrderService orderService, SpaEmployeeService spaEmployeeService) {
         this.personService = personService;
         this.trainerService = trainerService;
         this.bookingService = bookingService;
+        this.spaBookingService = spaBookingService;
         this.orderService = orderService;
         this.spaEmployeeService = spaEmployeeService;
     }
@@ -37,6 +39,7 @@ public class AdminController {
         model.addAttribute("trainers", trainerService.getAllTrainers());
         model.addAttribute("spaEmployees", spaEmployeeService.getAllEmployees());
         model.addAttribute("bookings", bookingService.getAllBookings());
+        model.addAttribute("spaBookings", spaBookingService.getAllBookings());
         model.addAttribute("orders", orderService.getAllOrders());
         model.addAttribute("employee", new EmployeeRegistrationDto());
         return "admin";
@@ -147,6 +150,31 @@ public class AdminController {
         return "redirect:/admin";
     }
 
+    @PostMapping("/spaBooking/delete")
+    public String deleteSpaBooking(@RequestParam int bookingId) {
+        spaBookingService.deleteById(bookingId);
+        return "redirect:/admin";
+    }
+
+    @PostMapping("/spaBooking/edit")
+    public String editSpaBooking(@RequestParam int bookingId,
+                                 @RequestParam String details,
+                                 Model model) {
+        if (details == null || details.trim().isEmpty()) {
+            model.addAttribute("error", "Детали не должны быть пустыми.");
+            return "admin";
+        }
+
+        SpaBooking booking = spaBookingService.getBookingById(bookingId);
+        if (booking != null) {
+            booking.setStatus(details);
+            spaBookingService.updateBooking(bookingId, booking);
+        } else {
+            model.addAttribute("error", "Бронирование не найдено.");
+        }
+
+        return "redirect:/admin";
+    }
 
     @PostMapping("/order/delete")
     public String deleteOrder(@RequestParam int orderId) {

@@ -46,30 +46,31 @@
                 </div>
 
                 <div class="form-group">
-                <label for="date">Выберите дату:</label>
-                <input type="date" id="date" name="date" required>
-            </div>
+                    <label for="date">Выберите дату:</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
 
-            <div class="form-group">
-                <label for="time">Выберите время:</label>
-                <select id="time" name="time" required>
-                    <option value="">Выберите время:</option>
-                    <th:block th:each="time : ${allTimes}">
-                        <th:block th:if="${!occupiedTimes.contains(time)}">
-                            <option th:value="${time}" th:text="${time}"></option>
+                <div class="form-group">
+                    <label for="time">Выберите время:</label>
+                    <select id="time" name="time" required>
+                        <option value="">Выберите время:</option>
+                        <th:block th:each="time : ${allTimes}">
+                            <th:block th:if="${!occupiedTimes.contains(time)}">
+                                <option th:value="${time}" th:text="${time}"></option>
+                            </th:block>
                         </th:block>
-                    </th:block>
-                </select>
-            </div>
+                    </select>
+                </div>
 
-            <input type="hidden" name="userId" th:value="${currentUser.id}">
+                <input type="hidden" name="userId" th:value="${currentUser.id}">
 
-            <div class="button-container">
-                <button class="btn-tr" type="submit">Записаться</button>
-            </div>
+                <div class="form-group">
+                    <button class="btn-m" type="submit">Записаться</button>
+                </div>
 
-            <div th:if="${errorMessage}" class="error-message" style="color:red;">
-                <p th:text="${errorMessage}"></p>
+                <div th:if="${errorMessage}" class="error-message" style="color:red;">
+                    <p th:text="${errorMessage}"></p>
+                </div>
             </div>
         </div>
     </form>
@@ -129,7 +130,5 @@
         });
     });
 </script>
-
-
 </body>
 </html>

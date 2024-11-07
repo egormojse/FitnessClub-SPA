@@ -44,5 +44,11 @@ public class Order {
         this.total_price = totalPrice;
     }
 
+    public void updateTotalPrice() {
+        this.total_price = orderItems.stream()
+                .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity())
+                .sum();
+    }
+
 
 }

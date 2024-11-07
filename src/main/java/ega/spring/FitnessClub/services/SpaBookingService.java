@@ -1,5 +1,6 @@
 package ega.spring.FitnessClub.services;
 
+import ega.spring.FitnessClub.models.GymBooking;
 import ega.spring.FitnessClub.models.SpaBooking;
 import ega.spring.FitnessClub.repositories.SpaBookingRepository;
 import org.springframework.stereotype.Service;
@@ -42,5 +43,26 @@ public class SpaBookingService {
 
     public List<SpaBooking> getUserSpaBookings(int userId) {
         return spaBookingRepository.findByUserId(userId);
+    }
+
+    public void deleteById(int bookingId) {
+        spaBookingRepository.deleteById(bookingId);
+    }
+
+    public SpaBooking getBookingById(int bookingId) {
+        return spaBookingRepository.findById(bookingId).orElse(null);
+    }
+
+    public void updateBooking(int bookingId, SpaBooking updatedBooking) {
+        SpaBooking spaBooking = spaBookingRepository.findById(bookingId).orElse(null);
+        if (spaBooking != null) {
+            spaBooking.setStatus(updatedBooking.getStatus());
+            spaBooking.setDate(updatedBooking.getDate());
+            spaBookingRepository.save(spaBooking);
+        }
+    }
+
+    public List<SpaBooking> getAllBookings() {
+        return spaBookingRepository.findAllByDeletedFalse();
     }
 }

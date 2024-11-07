@@ -10,13 +10,14 @@
 
 </head>
 <body>
-
+<div class="background-image"></div>
 <div class="container">
     <nav class="tabs">
         <div class="tab-button-wrapper">
             <div class="tab-button active" data-target="userPanel">Пользователи</div>
             <div class="tab-button" data-target="trainerPanel">Тренера</div>
-            <div class="tab-button" data-target="bookingPanel">Бронирования</div>
+            <div class="tab-button" data-target="bookingPanel">Бронирования тренировок</div>
+            <div class="tab-button" data-target="bookingSpaPanel">Бронирования спа</div>
             <div class="tab-button" data-target="orderPanel">Заказы</div>
             <div class="tab-button" data-target="spaEmployeePanel">Сотрудники СПА</div>
         </div>
@@ -93,7 +94,8 @@
         <div class="tab-content" id="bookingPanel">
             <h2>Бронирования</h2>
             <div th:each="booking : ${bookings}" class="card">
-                <p th:text="${booking.getDate()}">Дата бронирования</p>
+                <p th:text="${#temporals.format(booking.getDate(), 'yyyy-MM-dd')}"></p>
+                <p th:text="${#temporals.format(booking.getDate(), 'HH:mm')}"></p>
                 <p th:text="${booking.getStatus()}">Статус</p>
             </div>
             <div class="actions">
@@ -105,7 +107,53 @@
                 <label for="bookingSelect">Выберите бронирование:</label>
                 <select name="bookingId" id="bookingSelect" required>
                     <option value="">Выберите бронирование</option>
-                    <option th:each="booking : ${bookings}" th:value="${booking.getId()}" th:text="${booking.getDate()}"></option>
+                    <option th:each="booking : ${bookings}"
+                            th:value="${booking.getId()}"
+                            th:text="${#temporals.format(booking.getDate(), 'yyyy-MM-dd')} + ' '+
+                            ${#temporals.format(booking.getDate(), 'HH:mm')}"></option>
+                </select>
+                <label>Статус:
+                    <input type="text" name="details" required placeholder="Введите новый статус">
+                </label>
+                <button type="submit">Сохранить</button>
+            </form>
+
+
+            <form class="delete-form" id="deleteSpaBookingForm" th:action="@{/booking/delete}" method="post">
+                <label for="bookingDeleteSelect">Выберите бронирование для удаления:</label>
+                <select name="bookingId" id="spaBookingDeleteSelect" required>
+                    <option value="">Выберите бронирование</option>
+                    <option th:each="booking : ${bookings}"
+                            th:value="${booking.getId()}"
+                            th:text="${#temporals.format(booking.getDate(), 'yyyy-MM-dd')} + ' '+
+                            ${#temporals.format(booking.getDate(), 'HH:mm')}"></option>
+                </select>
+                <p>Вы уверены, что хотите удалить бронирование?</p>
+                <button type="submit">Удалить</button>
+            </form>
+        </div>
+
+        <!-- Booking Panel -->
+        <div class="tab-content" id="bookingSpaPanel">
+            <h2>Бронирования</h2>
+            <div th:each="booking : ${spaBookings}" class="card">
+                <p th:text="${#temporals.format(booking.getDate(), 'yyyy-MM-dd')}"></p>
+                <p th:text="${#temporals.format(booking.getDate(), 'HH:mm')}"></p>
+                <p th:text="${booking.getStatus()}">Статус</p>
+            </div>
+            <div class="actions">
+                <button onclick="toggleForm('edit', 'booking')">Редактировать</button>
+                <button onclick="toggleForm('delete', 'booking')">Удалить</button>
+            </div>
+
+            <form class="edit-form" id="editSpaBookingForm" th:action="@{/booking/edit}" method="post">
+                <label for="bookingSelect">Выберите бронирование:</label>
+                <select name="bookingId" id="spaBookingSelect" required>
+                    <option value="">Выберите бронирование</option>
+                    <option th:each="booking : ${bookings}"
+                            th:value="${booking.getId()}"
+                            th:text="${#temporals.format(booking.getDate(), 'yyyy-MM-dd')} + ' '+
+                            ${#temporals.format(booking.getDate(), 'HH:mm')}"></option>
                 </select>
                 <label>Статус:
                     <input type="text" name="details" required placeholder="Введите новый статус">
@@ -118,7 +166,10 @@
                 <label for="bookingDeleteSelect">Выберите бронирование для удаления:</label>
                 <select name="bookingId" id="bookingDeleteSelect" required>
                     <option value="">Выберите бронирование</option>
-                    <option th:each="booking : ${bookings}" th:value="${booking.getId()}" th:text="${booking.getDate()}"></option>
+                    <option th:each="booking : ${bookings}"
+                            th:value="${booking.getId()}"
+                            th:text="${#temporals.format(booking.getDate(), 'yyyy-MM-dd')} + ' '+
+                            ${#temporals.format(booking.getDate(), 'HH:mm')}"></option>
                 </select>
                 <p>Вы уверены, что хотите удалить бронирование?</p>
                 <button type="submit">Удалить</button>
@@ -129,6 +180,7 @@
         <div class="tab-content" id="orderPanel">
             <h2>Заказы</h2>
             <div th:each="order : ${orders}" class="card">
+                <p th:text="${order.getId()}"></p>
                 <p th:text="${order.getStatus()}">Статус</p>
             </div>
             <div class="actions">

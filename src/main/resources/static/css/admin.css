@@ -1,39 +1,51 @@
-
 .admin-container {
     display: flex;
 }
+
 .sidebar {
     width: 200px;
-    background: #f0f0f0;
+    background: #1a1a1a; /* Dark background for sidebar */
+    color: #ffffff; /* White text */
     padding: 20px;
+    border-right: 2px solid #ff0033; /* Neon red border */
 }
+
 .main-content {
     flex-grow: 1;
     padding: 20px;
+    background-color: #000000; /* Black background */
+    color: #ffffff; /* White text */
 }
+
 .card {
     margin: 20px 0;
     padding: 15px;
-    border: 1px solid #ccc;
+    border: 1px solid #ff0033; /* Neon red border */
     border-radius: 5px;
+    background-color: #1a1a1a; /* Dark background */
+    color: #ffffff; /* White text */
 }
+
 .button {
     padding: 10px 15px;
     margin: 5px;
     cursor: pointer;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
-    color: white;
+    background-color: #ff0033; /* Neon red */
+    color: #ffffff; /* White text */
+    transition: background-color 0.3s ease;
 }
+
 .button:hover {
-    background-color: #0056b3;
+    background-color: #ff3366; /* Brighter neon red */
 }
+
 .accordion {
     cursor: pointer;
     padding: 10px;
-    background-color: #007bff;
-    color: white;
+    background-color: #ff0033; /* Neon red */
+    color: #ffffff; /* White text */
     border: none;
     text-align: left;
     outline: none;
@@ -42,17 +54,22 @@
     width: 100%;
     margin: 10px 0;
 }
+
 .accordion.active, .accordion:hover {
-    background-color: #0056b3;
+    background-color: #ff3366; /* Brighter neon red */
 }
+
 .panel {
     display: none;
     padding: 0 18px;
     overflow: hidden;
-    background-color: #f1f1f1;
+    background-color: #1a1a1a; /* Dark background */
+    color: #ffffff; /* White text */
     position: relative;
     margin: 10px 0;
+    border-left: 2px solid #ff0033; /* Neon red border */
 }
+
 .close-button {
     position: absolute;
     right: 10px;
@@ -61,5 +78,5 @@
     border: none;
     font-size: 16px;
     cursor: pointer;
-    color: red;
+    color: #ff0033; /* Neon red */
 }

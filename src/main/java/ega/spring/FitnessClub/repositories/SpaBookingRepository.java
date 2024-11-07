@@ -20,4 +20,6 @@ public interface SpaBookingRepository extends JpaRepository<SpaBooking, Integer>
 
 
     List<SpaBooking> findByUserId(int userId);
+
+    List<SpaBooking> findAllByDeletedFalse();
 }
