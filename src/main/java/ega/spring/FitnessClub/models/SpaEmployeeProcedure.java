@@ -14,11 +14,11 @@ public class SpaEmployeeProcedure {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id", referencedColumnName = "id")
     private SpaEmployee spa_employee;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "procedure_id", referencedColumnName = "id" )
     private SpaProcedure spa_procedure;
 

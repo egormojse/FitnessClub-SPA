@@ -7,12 +7,16 @@ import ega.spring.FitnessClub.models.Trainer;
 import ega.spring.FitnessClub.repositories.PersonMembershipRepository;
 import ega.spring.FitnessClub.repositories.WorkoutBookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 
@@ -20,12 +24,14 @@ import java.util.stream.Collectors;
 public class BookingService {
 
     private final WorkoutBookingRepository trainingSessionRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     private PersonMembershipRepository personMembershipRepository;
 
-    public BookingService(WorkoutBookingRepository trainingSessionRepository) {
+    public BookingService(WorkoutBookingRepository trainingSessionRepository, RedisTemplate<String, Object> redisTemplate) {
         this.trainingSessionRepository = trainingSessionRepository;
+        this.redisTemplate = redisTemplate;
     }
 
     public void save(GymBooking session) {
@@ -36,25 +42,48 @@ public class BookingService {
         return trainingSessionRepository.findByUserId(userId);
     }
 
-    public List<String> getOccupiedTimes(int trainerId, LocalDate date) {
-        LocalDateTime startOfDay = date.atStartOfDay();
-        LocalDateTime endOfDay = date.atTime(23, 59, 59);
-        List<GymBooking> bookings = trainingSessionRepository.findByTrainerIdAndDate(trainerId, startOfDay, endOfDay);
+    public List<String> getOccupiedTimes(int trainerId, Date date) {
+        // Преобразуем Date в LocalDateTime
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        // Начало и конец дня в LocalDateTime
+        LocalDateTime startOfDay = localDate.atStartOfDay();  // Начало дня (00:00)
+        LocalDateTime endOfDay = localDate.atTime(23, 59, 59);  // Конец дня (23:59:59)
+
+        // Преобразуем LocalDateTime в Date для работы с репозиторием
+        Date startOfDayDate = Date.from(startOfDay.atZone(ZoneId.systemDefault()).toInstant());
+        Date endOfDayDate = Date.from(endOfDay.atZone(ZoneId.systemDefault()).toInstant());
+
+        List<GymBooking> bookings = trainingSessionRepository.findByTrainerIdAndDate(trainerId, startOfDayDate, endOfDayDate);
 
         return bookings.stream()
-                .map(booking -> booking.getDate().toLocalTime().toString())
+                .map(booking -> booking.getDate().toString())  // Преобразуем в строку
                 .collect(Collectors.toList());
     }
 
 
-    public boolean isTimeOccupied(int trainerId, LocalDate trainingDate, String trainingTime) {
-        LocalDateTime dateTime = LocalDateTime.of(trainingDate, LocalTime.parse(trainingTime));
-        List<GymBooking> existingBookings = trainingSessionRepository.findByTrainerIdAndDate(trainerId, dateTime);
-        return !existingBookings.isEmpty();
+
+
+    public boolean isTimeOccupied(int trainerId, Date trainingDate, String trainingTime) {
+        // Преобразуем Date в LocalDate
+        LocalDate localDate = trainingDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        // Преобразуем строку времени в LocalTime и объединяем с LocalDate
+        LocalDateTime dateTime = LocalDateTime.of(localDate, LocalTime.parse(trainingTime));
+
+        // Преобразуем LocalDateTime в Date для работы с репозиторием
+        Date dateTimeDate = Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
+
+        List<GymBooking> existingBookings = trainingSessionRepository.findByTrainerIdAndDate(trainerId, dateTimeDate);
+
+        return !existingBookings.isEmpty();  // Если есть записи, значит время занято
     }
 
+
+
     public List<GymBooking> getAllBookings() {
-        return trainingSessionRepository.findAllByDeletedFalse();
+        List<GymBooking> bookings = trainingSessionRepository.findAllByDeletedFalse();
+        return bookings;
     }
 
     public void deleteBookingById(int id) {

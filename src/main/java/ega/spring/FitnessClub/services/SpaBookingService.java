@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,18 +28,22 @@ public class SpaBookingService {
     }
 
     public List<String> getOccupiedTimes(int employeeId, LocalDate date) {
-        LocalDateTime startOfDay = date.atStartOfDay();
-        LocalDateTime endOfDay = date.atTime(23, 59, 59);
+        Date startOfDay = Date.from(date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        Date endOfDay = Date.from(date.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
+
         List<SpaBooking> bookings = spaBookingRepository.findByEmployeeIdAndDate(employeeId, startOfDay, endOfDay);
 
         return bookings.stream()
-                .map(booking -> booking.getDate().toLocalTime().toString())
+                .map(booking -> booking.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime().toString())
                 .collect(Collectors.toList());
     }
 
-    public boolean isTimeOccupied(int employeeId, LocalDate date, String time) {
-        LocalDateTime dateTime = LocalDateTime.of(date, LocalTime.parse(time));
-        List<SpaBooking> existingBookings = spaBookingRepository.findByEmployeeIdAndDate(employeeId, dateTime);
+    public boolean isTimeOccupied(int employeeId, Date date, String time) {
+        LocalTime localTime = LocalTime.parse(time);
+        LocalDateTime dateTime = LocalDateTime.of(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), localTime);
+        Date dateTimeAsDate = Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
+
+        List<SpaBooking> existingBookings = spaBookingRepository.findByEmployeeIdAndDate(employeeId, dateTimeAsDate);
         return !existingBookings.isEmpty();
     }
 

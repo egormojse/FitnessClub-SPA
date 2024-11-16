@@ -1,14 +1,20 @@
 package ega.spring.FitnessClub.services;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ega.spring.FitnessClub.models.Person;
 import ega.spring.FitnessClub.repositories.PeopleRepository;
 import ega.spring.FitnessClub.security.PersonDetails;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +22,11 @@ import java.util.Optional;
 public class PersonDetailsService implements UserDetailsService {
 
     private final PeopleRepository peopleRepository;
+    private ObjectMapper objectMapper = new ObjectMapper();
+
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     public PersonDetailsService(PeopleRepository peopleRepository) {
         this.peopleRepository = peopleRepository;
@@ -31,6 +42,7 @@ public class PersonDetailsService implements UserDetailsService {
         return new PersonDetails(person.get());
     }
 
+
     public Person getUserById(int userId) {
         if (peopleRepository.existsById(userId))
             return peopleRepository.findById(userId);
@@ -38,9 +50,30 @@ public class PersonDetailsService implements UserDetailsService {
     }
 
 
-
     public List<Person> findAll() {
-        return peopleRepository.findAllByDeletedFalse();
+        String cachedPersonsJson = redisTemplate.opsForValue().get("allPersons").toString();
+
+        if (cachedPersonsJson != null) {
+            try {
+                return objectMapper.readValue(cachedPersonsJson, new TypeReference<List<Person>>() {});
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        String sql = "SELECT * FROM person WHERE deleted = false";
+        List<Person> persons = peopleRepository.findAllByDeletedFalse();
+
+        try {
+            String personsJson = objectMapper.writeValueAsString(persons);
+
+            redisTemplate.opsForValue().set("allPersons", personsJson);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return persons;
     }
 
     public void deleteUserById(int id) {

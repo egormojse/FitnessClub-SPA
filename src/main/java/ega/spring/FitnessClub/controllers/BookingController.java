@@ -19,6 +19,8 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +62,7 @@ public class BookingController {
     @GetMapping("/checkAvailability")
     @ResponseBody
     public Map<String, Object> checkAvailability(@RequestParam int trainerId,
-                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate trainingDate) {
+                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date trainingDate) {
         List<String> occupiedTimes = workoutBookingService.getOccupiedTimes(trainerId, trainingDate);
 
         List<String> allTimes = List.of("10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00");
@@ -76,17 +78,26 @@ public class BookingController {
 
     @PostMapping("/submitWorkout")
     public String submitWorkoutBooking(@RequestParam int trainerId,
-                                       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate trainingDate,
+                                       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date trainingDate,
                                        @RequestParam String trainingTime,
                                        @RequestParam int userId,
                                        Principal principal,
                                        Model model) {
+        // Преобразуем Date в LocalDate для работы с ним
+        LocalDate localDate = trainingDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        // Преобразуем строку времени в LocalTime и объединяем с LocalDate
+        LocalDateTime dateTime = LocalDateTime.of(localDate, LocalTime.parse(trainingTime));
+
+        // Преобразуем LocalDateTime обратно в Date для использования в репозитории
+        Date trainingDateTime = Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
+
+        // Проверка занятости времени
         if (workoutBookingService.isTimeOccupied(trainerId, trainingDate, trainingTime)) {
             model.addAttribute("errorMessage", "Выбранное время занято. Пожалуйста, выберите другое время.");
             return showTrainerForm(model, principal);
         }
 
-        LocalDateTime trainingDateTime = LocalDateTime.of(trainingDate, LocalTime.parse(trainingTime));
         Trainer trainer = trainerService.getTrainerById(trainerId);
         Person user = personDetailsService.getUserById(userId);
 
@@ -108,7 +119,5 @@ public class BookingController {
         workoutBookingService.save(booking);
         return "index";
     }
-
-
 
 }

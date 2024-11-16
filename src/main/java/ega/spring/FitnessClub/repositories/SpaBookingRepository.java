@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -14,9 +15,9 @@ public interface SpaBookingRepository extends JpaRepository<SpaBooking, Integer>
     @Query("SELECT sb FROM SpaBooking sb WHERE sb.employee.id = :employeeId " +
             "AND sb.date BETWEEN :startOfDay AND :endOfDay")
     List<SpaBooking> findByEmployeeIdAndDate(int employeeId,
-                                             LocalDateTime startOfDay, LocalDateTime endOfDay);
+                                             Date startOfDay, Date endOfDay);
 
-    List<SpaBooking> findByEmployeeIdAndDate(int employeeId, LocalDateTime date);
+    List<SpaBooking> findByEmployeeIdAndDate(int employeeId, Date date);
 
 
     List<SpaBooking> findByUserId(int userId);

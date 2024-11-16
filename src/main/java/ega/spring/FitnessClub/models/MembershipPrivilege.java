@@ -11,12 +11,12 @@ import lombok.Setter;
 @IdClass(MembershipPrivilegeId.class)
 public class MembershipPrivilege {
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "membership_type_id", nullable = false)
     private MembershipType membershipType;
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "privilege_id", nullable = false)
     private Privilege privilege;
 

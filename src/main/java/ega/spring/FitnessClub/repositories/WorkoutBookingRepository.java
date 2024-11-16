@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -13,9 +13,9 @@ public interface WorkoutBookingRepository extends JpaRepository<GymBooking, Inte
 
 
     @Query("SELECT wb FROM GymBooking wb WHERE wb.trainer.id = :trainerId AND wb.date BETWEEN :startOfDay AND :endOfDay")
-    List<GymBooking> findByTrainerIdAndDate(int trainerId, LocalDateTime startOfDay, LocalDateTime endOfDay);
+    List<GymBooking> findByTrainerIdAndDate(int trainerId, Date startOfDay, Date endOfDay);
 
-    List<GymBooking> findByTrainerIdAndDate(int trainer_id, LocalDateTime date);
+    List<GymBooking> findByTrainerIdAndDate(int trainer_id, Date date);
 
     List<GymBooking> findByUserId(int userId);
 

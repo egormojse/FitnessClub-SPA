@@ -41,8 +41,14 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/auth/login?logout")
                         .invalidateHttpSession(true)
+                        .clearAuthentication(true)
                         .deleteCookies("JSESSIONID")
-                );
+                        .permitAll()
+                )
+                .sessionManagement(session -> session
+                        .maximumSessions(1)  // Один пользователь — одна активная сессия
+                        .maxSessionsPreventsLogin(false)  // Если true, блокирует вход для нового сеанса
+                );;
 
         return http.build();
     }

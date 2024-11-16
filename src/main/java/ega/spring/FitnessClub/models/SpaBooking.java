@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "spa_booking")
@@ -16,21 +17,21 @@ public class SpaBooking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private Person user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "procedure_id", referencedColumnName = "id")
     private SpaProcedure procedure;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id", referencedColumnName = "id")
     private SpaEmployee employee;
 
     @Column(name = "date")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime date;
+    private Date date;
 
     @Column(name = "status")
     private String status;

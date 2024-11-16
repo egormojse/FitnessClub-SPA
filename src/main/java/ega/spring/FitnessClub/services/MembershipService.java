@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Service
 public class MembershipService {
@@ -32,12 +34,12 @@ public class MembershipService {
 
         PersonMembership existingMembership = personMembershipRepository.findActiveMembershipByPersonId(person.getId());
         if (existingMembership != null) {
-            if (existingMembership.getEndDate().isAfter(LocalDate.now())) {
+            if (existingMembership.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().isAfter(LocalDate.now())) {
                 existingMembership.setRemainingGymVisits(existingMembership.getRemainingGymVisits() + membershipType.getGymVisits());
                 existingMembership.setRemainingSpaVisits(existingMembership.getRemainingSpaVisits() + membershipType.getSpaVisits());
             } else {
-                existingMembership.setStartDate(LocalDate.now());
-                existingMembership.setEndDate(LocalDate.now().plusDays(membershipType.getDuration()));
+                existingMembership.setStartDate(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                existingMembership.setEndDate(Date.from(LocalDate.now().plusDays(membershipType.getDuration()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
                 existingMembership.setRemainingGymVisits(membershipType.getGymVisits());
                 existingMembership.setRemainingSpaVisits(membershipType.getSpaVisits());
             }
@@ -46,8 +48,9 @@ public class MembershipService {
             PersonMembership personMembership = new PersonMembership();
             personMembership.setPerson(person);
             personMembership.setMembershipType(membershipType);
-            personMembership.setStartDate(LocalDate.now());
-            personMembership.setEndDate(LocalDate.now().plusDays(membershipType.getDuration()));
+
+            personMembership.setStartDate(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            personMembership.setEndDate(Date.from(LocalDate.now().plusDays(membershipType.getDuration()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
             personMembership.setRemainingGymVisits(membershipType.getGymVisits());
             personMembership.setRemainingSpaVisits(membershipType.getSpaVisits());
 

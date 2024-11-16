@@ -2,19 +2,29 @@ package ega.spring.FitnessClub.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisHash;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Entity
 @Table(name="person")
 @Getter
 @Setter
-public class Person {
+public class Person implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 123456789L;
+
 
     @Id
     @Column(name="id")
@@ -37,15 +47,7 @@ public class Person {
     @Column(name = "bd_date")
     @NotNull(message = "Введите дату рождения")
     @DateTimeFormat(pattern = "MM-dd-yyyy")
-    private LocalDate bd_date;
-
-    @AssertTrue(message = "Возраст должен быть больше 12 лет")
-    public boolean isAgeValid() {
-        if (bd_date == null) {
-            return false;
-        }
-        return Period.between(bd_date, LocalDate.now()).getYears() >= 12;
-    }
+    private Date bd_date;
 
     @Column(name = "email", unique = true)
     @Email(message = "Неверный формат электронной почты")
@@ -63,7 +65,7 @@ public class Person {
 
     public Person() {}
 
-    public Person(String first_name, String last_name, LocalDate bd_date, String email,
+    public Person(String first_name, String last_name, Date bd_date, String email,
                   String role, String password) {
         this.first_name = first_name;
         this.last_name = last_name;
